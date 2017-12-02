@@ -1,10 +1,10 @@
 var express    = require("express");
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'password',
-  database : 'mydb'
+  host      : 'localhost',
+  user      : 'root',
+  password  : 'password',
+  database  : 'mydb'
 });
 var app = express();
 
@@ -18,9 +18,8 @@ if(!err) {
 
 app.get("/",function(req,res){
 connection.query('SELECT DISTINCT route from RoutesLinesMap', function(err, rows, fields) {
-//connection.end();
+
   if (!err)
-//    console.log('The solution is: ', rows);
     console.log('Success while performing Query.');
 	res.send(rows);
   else
