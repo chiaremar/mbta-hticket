@@ -1,46 +1,102 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
+var express    = require('express');
+var mysql      = require('mysql');
 var bodyParser = require('body-parser');
-
-var index = require('./routes/index');
-var users = require('./routes/users');
+var cors = require('cors')
 
 var app = express();
+app.use(cors());
+//app.use(bodyParser.urlencoded({extended:false}));
+//app.use(bodyParser.json());
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// create application/json parser
+var jsonParser = bodyParser.json()
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-app.use('/', index);
-app.use('/users', users);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+var db = mysql.createConnection({
+  host      : 'localhost',
+  user      : 'root',
+  password  : 'password',
+  database  : 'mydb'
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+
+db.connect(function(err){
+if(!err) {
+    console.log("Database is connected ...");    
+} else {
+    console.log("Error connecting database ...");    
+}
 });
 
-module.exports = app;
+
+
+
+
+//register user
+app.get('/register', (req, res) => {
+  let post = {username:'marianne', password:'12345'};
+  let sql = 'INSERT INTO users SET ?';
+  let query = db.query(sql, post, (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    res.send('User registered...');
+  })
+});
+
+
+//login user
+app.post('/login', jsonParser, function(req, res)  {
+//  let post = {username:'marianne', password:'12345'};
+  var usern=req.body.email;
+  var passw=req.body.password;
+  console.log('login service requested with', req.body);
+
+  let sql = `SELECT * from users where username='${usern}' and password='${passw}';`;
+  console.log(sql);
+
+  let query = db.query(sql, (err, results) => {
+    if (err) throw err;
+    console.log(results); 
+    //allow login if user passed auth
+    res.status(200).send({allowed: true});
+  })
+});
+
+// app.get('/login',function(req,res){
+//   let sql = 'SELECT * from users where username = req.username'
+//   db.query('SELECT DISTINCT route from RoutesLinesMap', function(err, rows, fields) {
+  
+//     if (!err) {
+//       console.log('Success while performing Query.');
+//       res.send(rows);
+//     } else
+//       console.log('Error while performing Query.');
+//     });
+//   });
+
+//get all stops (unique)
+app.get('/routes',(req,res) => {
+  let sql = 'SELECT DISTINCT route from RoutesLinesMap';
+  let query = db.query(sql, (err, results) => {
+    if (err) throw err;
+      console.log('routes fetched');
+      res.send(results);
+    });
+});
+
+//get filtered list of stops for start route
+app.get('/routes/:routename',(req,res) => {
+  let sql = `SELECT DISTINCT route from RoutesLinesMap 
+             WHERE RoutesLinesMap.line 
+             IN (select line from RoutesLinesMap where route = ${req.params.routename})`;
+  let query = db.query(sql, (err, results) => {
+    if (err) throw err;
+      console.log('filtered routes fetched');
+      res.send(results);
+    });
+});
+
+app.listen(3000);
