@@ -5,8 +5,6 @@ var cors = require('cors')
 
 var app = express();
 app.use(cors());
-//app.use(bodyParser.urlencoded({extended:false}));
-//app.use(bodyParser.json());
 
 // create application/json parser
 var jsonParser = bodyParser.json()
@@ -18,7 +16,7 @@ var db = mysql.createConnection({
   host      : 'localhost',
   user      : 'root',
   password  : 'password',
-  database  : 'mydb'
+  database  : 'mbtadb'
 });
 
 db.connect(function(err){
@@ -30,19 +28,25 @@ if(!err) {
 });
 
 //register user
-app.get('/register', (req, res) => {
+app.post('/register', jsonParser, (req, res) => {
   let post = req.body;
+  console.log('in register post: ', post);
+  var usern=req.body.email;
+  var passw=req.body.password;
 
-  let sql = 'INSERT INTO users SET ?';
+  let sql = `INSERT INTO users (username, password) Values ('${usern}', '${passw}');`;
+  console.log('register query: ', sql);
   let query = db.query(sql, post, (err, result) => {
     if (err) {
+      //unique constraint on username triggers this error
+      console.log(`Could not register user`);
       console.error(err);
-      res.statusCode = 500;
-      return res.json({errors: [`Could not register user`]});
+
+      return res.status(200).send({success: false});
     }
     console.log('User registered...');
     //allow login, user passed auth
-    res.status(200).send({allowed: true});
+    return res.status(200).send({success: true});
   })
 });
 
@@ -66,8 +70,10 @@ app.post('/login', jsonParser, function(req, res)  {
     
     //No results means user not found or didn't match password
     if (results.length === 0) {
-      res.statusCode = 404;
-      return res.json({errors: [`User not registered`]});
+      console.log('User not registered...');
+      //res.statusCode = 404;
+      //return res.json({errors: [`User not registered`]});
+      return res.status(200).send({allowed: false});
     }
 
     //allow login, user passed auth
@@ -75,18 +81,6 @@ app.post('/login', jsonParser, function(req, res)  {
     res.status(200).send({allowed: true});
   })
 });
-
-// app.get('/login',function(req,res){
-//   let sql = 'SELECT * from users where username = req.username'
-//   db.query('SELECT DISTINCT route from RoutesLinesMap', function(err, rows, fields) {
-  
-//     if (!err) {
-//       console.log('Success while performing Query.');
-//       res.send(rows);
-//     } else
-//       console.log('Error while performing Query.');
-//     });
-//   });
 
 //get all stops (unique)
 app.get('/routes',(req,res) => {

@@ -17,7 +17,7 @@ import {SourceRoutePage} from '../../pages/source-route/source-route';
 })
 export class LoginPage {
 
-  registerCredentials = { email: '', password: '' };
+  loginCredentials = { email: '', password: '' };
   constructor(public navCtrl: NavController, private alertCtrl: AlertController, public navParams: NavParams, private auth: AuthServiceProvider) {
   }
 
@@ -27,25 +27,26 @@ export class LoginPage {
  
   public login() {
     
-    this.auth.login(this.registerCredentials).subscribe(allowed => {
+    this.auth.login(this.loginCredentials).subscribe(allowed => {
       if (allowed) {  
-        //todo: make this redirect to select start route page
+        //login success, pick mbta routes
         this.navCtrl.setRoot(SourceRoutePage);
       } else {
-        this.showError("Access Denied");
+        this.showError("Have you created an account?");
       }
-    },
-      error => {
-        this.showError(error);
-      });
+    });
+    // },
+    //   error => {
+    //     this.showError(error);
+    //   });
   }
  
   showError(text) {
  
     let alert = this.alertCtrl.create({
-      title: 'Fail',
+      title: 'Something\'s not right',
       subTitle: text,
-      buttons: ['OK']
+      buttons: ['x']
     });
     alert.present();
   }

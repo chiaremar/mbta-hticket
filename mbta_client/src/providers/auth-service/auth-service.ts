@@ -53,30 +53,38 @@ export class AuthServiceProvider {
     }
   }
 
-//   // Add a new comment
-//   addComment (body: Object): Observable<Comment[]> {
-//     let bodyString = JSON.stringify(body); // Stringify payload
-//     let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
-//     let options       = new RequestOptions({ headers: headers }); // Create a request option
-
-//     return this.http.post(this.commentsUrl, body, options) // ...using post request
-//                      .map((res:Response) => res.json()) // ...and calling .json() on the response to return data
-//                      .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
-// }   
-
- 
   public register(credentials) {
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
-      // At this point store the credentials to your backend!
       return Observable.create(observer => {
-        observer.next(true);
-        observer.complete();
+        let body = JSON.stringify(credentials);
+        let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+
+        let options       = new RequestOptions({ headers: headers }); // Create 
+        
+        //todo move the url out to config
+         this.http.post('http://localhost:3000/register', body, options) // ...using post request
+                           .map(res => res.json()) // ...and calling .json() on the response to return data
+                          // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
+                           .subscribe (data =>{
+                                observer.next(data.success);
+                                observer.complete();      
+                           });            
       });
     }
   }
-
+  // public register(credentials) {
+  //   if (credentials.email === null || credentials.password === null) {
+  //     return Observable.throw("Please insert credentials");
+  //   } else {
+  //     // At this point store the credentials to your backend!
+  //     return Observable.create(observer => {
+  //       observer.next(true);
+  //       observer.complete();
+  //     });
+  //   }
+  // }
 
   public getUserInfo() : User {
     return this.currentUser;

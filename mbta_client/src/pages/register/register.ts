@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, AlertController, NavParams } from 'ionic-angular';
+import {AuthServiceProvider} from '../../providers/auth-service/auth-service';
+import {SourceRoutePage} from '../../pages/source-route/source-route';
 
 /**
  * Generated class for the RegisterPage page.
@@ -14,9 +16,32 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'register.html',
 })
 export class RegisterPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  registerCredentials = { email: '', password: '' };
+  constructor(public navCtrl: NavController,private alertCtrl: AlertController, public navParams: NavParams, private auth: AuthServiceProvider) {
   }
+
+  public register() {
+    
+    this.auth.register(this.registerCredentials).subscribe(success => {
+      if (success) {  
+        //registration success, pick mbta routes
+        this.navCtrl.setRoot(SourceRoutePage);
+      } else {
+        this.showError("That email may already be taken.");
+      }
+    });
+  }
+
+  showError(text) {
+      
+         let alert = this.alertCtrl.create({
+           title: 'Something\'s not right',
+           subTitle: text,
+           buttons: ['x']
+         });
+         alert.present();
+       }
+     
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RegisterPage');

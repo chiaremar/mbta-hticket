@@ -45,6 +45,8 @@ var RegisterPageModule = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RegisterPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__pages_source_route_source_route__ = __webpack_require__(101);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -56,6 +58,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
+
 /**
  * Generated class for the RegisterPage page.
  *
@@ -63,20 +67,44 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var RegisterPage = (function () {
-    function RegisterPage(navCtrl, navParams) {
+    function RegisterPage(navCtrl, alertCtrl, navParams, auth) {
         this.navCtrl = navCtrl;
+        this.alertCtrl = alertCtrl;
         this.navParams = navParams;
+        this.auth = auth;
+        this.registerCredentials = { email: '', password: '' };
     }
+    RegisterPage.prototype.register = function () {
+        var _this = this;
+        this.auth.register(this.registerCredentials).subscribe(function (success) {
+            if (success) {
+                //registration success, pick mbta routes
+                _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_3__pages_source_route_source_route__["a" /* SourceRoutePage */]);
+            }
+            else {
+                _this.showError("That email may already be taken.");
+            }
+        });
+    };
+    RegisterPage.prototype.showError = function (text) {
+        var alert = this.alertCtrl.create({
+            title: 'Something\'s not right',
+            subTitle: text,
+            buttons: ['x']
+        });
+        alert.present();
+    };
     RegisterPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad RegisterPage');
     };
     RegisterPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-register',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\register\register.html"*/'<!--\n  Generated template for the RegisterPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>register</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\register\register.html"*/,
+            selector: 'page-register',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\register\register.html"*/'<!--\n  Generated template for the RegisterPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>MBTA Ticket Register</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n    <div class="login-box">\n        <form (ngSubmit)="register()" #registerForm="ngForm">\n          <ion-row>\n            <ion-col>\n              <ion-list inset>\n                \n                <ion-item>\n                  <ion-input type="text" placeholder="Email" name="email" [(ngModel)]="registerCredentials.email" required></ion-input>\n                </ion-item>\n                \n                <ion-item>\n                  <ion-input type="password" placeholder="Password" name="password" [(ngModel)]="registerCredentials.password" required></ion-input>\n                </ion-item>\n                \n              </ion-list>\n            </ion-col>\n          </ion-row>\n          \n          <ion-row>\n            <ion-col class="signup-col">\n              <button ion-button class="register-btn" full type="submit" [disabled]="!registerForm.form.valid">Create New Account</button>\n\n            </ion-col>\n          </ion-row>\n          \n        </form>\n      </div>\n\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\register\register.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__["a" /* AuthServiceProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_auth_service_auth_service__["a" /* AuthServiceProvider */]) === "function" && _d || Object])
     ], RegisterPage);
     return RegisterPage;
+    var _a, _b, _c, _d;
 }());
 
 //# sourceMappingURL=register.js.map
