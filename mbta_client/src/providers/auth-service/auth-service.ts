@@ -46,8 +46,8 @@ export class AuthServiceProvider {
                            .map(res => res.json()) // ...and calling .json() on the response to return data
                           // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
                            .subscribe (data =>{
-        observer.next(data.allowed);
-        observer.complete();      
+                                observer.next(data.allowed);
+                                observer.complete();      
                            });            
       });
     }

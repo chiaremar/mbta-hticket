@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController,AlertController, NavParams } from 'ionic-angular';
 import {AuthServiceProvider} from '../../providers/auth-service/auth-service';
-import {HomePage} from '../../pages/home/home';
+import {SourceRoutePage} from '../../pages/source-route/source-route';
+
 /**
  * Generated class for the LoginPage page.
  *
@@ -28,8 +29,8 @@ export class LoginPage {
     
     this.auth.login(this.registerCredentials).subscribe(allowed => {
       if (allowed) {  
-             
-        this.navCtrl.setRoot(HomePage);
+        //todo: make this redirect to select start route page
+        this.navCtrl.setRoot(SourceRoutePage);
       } else {
         this.showError("Access Denied");
       }

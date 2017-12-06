@@ -9,13 +9,16 @@ import { HttpModule } from '@angular/http';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
+import { SourceRoutePage } from '../pages/source-route/source-route';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { RouteServiceProvider } from '../providers/route-service/route-service';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    LoginPage
+    LoginPage,
+    SourceRoutePage
   ],
   imports: [
     BrowserModule,
@@ -26,13 +29,15 @@ import { AuthServiceProvider } from '../providers/auth-service/auth-service';
   entryComponents: [
     MyApp,
     HomePage,
-    LoginPage
+    LoginPage,
+    SourceRoutePage
   ],
   providers: [
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthServiceProvider
+    AuthServiceProvider,
+    RouteServiceProvider
   ]
 })
 export class AppModule {}

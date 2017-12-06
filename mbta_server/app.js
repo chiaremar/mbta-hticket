@@ -21,8 +21,6 @@ var db = mysql.createConnection({
   database  : 'mydb'
 });
 
-
-
 db.connect(function(err){
 if(!err) {
     console.log("Database is connected ...");    
@@ -31,18 +29,20 @@ if(!err) {
 }
 });
 
-
-
-
-
 //register user
 app.get('/register', (req, res) => {
-  let post = {username:'marianne', password:'12345'};
+  let post = req.body;
+
   let sql = 'INSERT INTO users SET ?';
   let query = db.query(sql, post, (err, result) => {
-    if (err) throw err;
-    console.log(result);
-    res.send('User registered...');
+    if (err) {
+      console.error(err);
+      res.statusCode = 500;
+      return res.json({errors: [`Could not register user`]});
+    }
+    console.log('User registered...');
+    //allow login, user passed auth
+    res.status(200).send({allowed: true});
   })
 });
 
@@ -58,9 +58,20 @@ app.post('/login', jsonParser, function(req, res)  {
   console.log(sql);
 
   let query = db.query(sql, (err, results) => {
-    if (err) throw err;
-    console.log(results); 
-    //allow login if user passed auth
+    if (err) {
+      console.error(err);
+      res.statusCode = 500;
+      return res.json({errors: [`Could not retrieve user`]});
+    }
+    
+    //No results means user not found or didn't match password
+    if (results.length === 0) {
+      res.statusCode = 404;
+      return res.json({errors: [`User not registered`]});
+    }
+
+    //allow login, user passed auth
+    console.log('User logged on...');
     res.status(200).send({allowed: true});
   })
 });
