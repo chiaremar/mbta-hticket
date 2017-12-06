@@ -43,10 +43,27 @@ CREATE TABLE IF NOT EXISTS `mbtadb`.`users` (
 ENGINE = InnoDB;
 
 -- -----------------------------------------------------
+-- Table `mbtadb`.`tickets`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mbtadb`.`tickets` ;
+
+CREATE TABLE IF NOT EXISTS `mbtadb`.`tickets` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `startroute` VARCHAR(45) NULL,
+  `endroute` VARCHAR(45) NULL,
+  `username` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
 -- sample user data
 -- -----------------------------------------------------
 INSERT INTO users (username, password) VALUES ('user@email.com', 'pass');
 
+-- -----------------------------------------------------
+-- sample ticket data
+-- -----------------------------------------------------
+INSERT INTO tickets (username, startroute, endroute) VALUES ('user@email.com', 'South Station', 'Worcester');
 
 -- -----------------------------------------------------
 -- Data created using python translator script json2sql.py

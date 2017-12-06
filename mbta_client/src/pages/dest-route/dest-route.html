@@ -14,5 +14,10 @@
 
 
 <ion-content padding>
-  List of destination stops for route {{sourceRoute}}
+  <ion-list>
+    <ion-item *ngFor="let route of filteredRoutes">
+      {{route.route}}
+    </ion-item>
+
+  </ion-list>
 </ion-content>

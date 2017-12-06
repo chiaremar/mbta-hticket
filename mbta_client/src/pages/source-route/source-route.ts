@@ -28,16 +28,12 @@ export class SourceRoutePage {
       this.routes = routes;
     })
 
-    // this.routes.push("route 1");
-    // this.routes.push("route 2");
-    // this.routes.push("route 3");
-
     this.destinationPage = DestRoutePage;
   }
 
   loadDestination(route) {
     console.log(route);
-    this.navCtrl.push(this.destinationPage, {routeName: route});
+    this.navCtrl.push(this.destinationPage,  route);
   }
 
   ionViewDidLoad() {

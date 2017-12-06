@@ -10,6 +10,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { SourceRoutePage } from '../pages/source-route/source-route';
+import { DestRoutePage } from '../pages/dest-route/dest-route';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { RouteServiceProvider } from '../providers/route-service/route-service';
 
@@ -18,7 +19,8 @@ import { RouteServiceProvider } from '../providers/route-service/route-service';
     MyApp,
     HomePage,
     LoginPage,
-    SourceRoutePage
+    SourceRoutePage,
+    DestRoutePage
   ],
   imports: [
     BrowserModule,
@@ -30,7 +32,8 @@ import { RouteServiceProvider } from '../providers/route-service/route-service';
     MyApp,
     HomePage,
     LoginPage,
-    SourceRoutePage
+    SourceRoutePage,
+    DestRoutePage
   ],
   providers: [
     StatusBar,

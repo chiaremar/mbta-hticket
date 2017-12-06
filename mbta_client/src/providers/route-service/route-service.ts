@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import {Http} from '@angular/http';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
@@ -18,6 +18,14 @@ export class RouteServiceProvider {
   getRoutes(){
     return this.http.get('http://localhost:3000/routes')
     .map(res => res.json() );
- //   .map(res => res.results);
+
+  }
+
+  getFilteredRoutes(startRoute){
+    console.log('getFilteredRoutes: ', 'http://localhost:3000/routes/\"' + startRoute +'\"');
+    //use source route name to filter destination routes
+    return this.http.get('http://localhost:3000/routes/\"' + encodeURIComponent(startRoute) +'\"')
+    .map(res => res.json() );
+ 
   }
 }

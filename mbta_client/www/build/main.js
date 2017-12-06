@@ -118,14 +118,11 @@ var SourceRoutePage = (function () {
             console.log('routes', routes);
             _this.routes = routes;
         });
-        // this.routes.push("route 1");
-        // this.routes.push("route 2");
-        // this.routes.push("route 3");
         this.destinationPage = __WEBPACK_IMPORTED_MODULE_2__dest_route_dest_route__["a" /* DestRoutePage */];
     }
     SourceRoutePage.prototype.loadDestination = function (route) {
         console.log(route);
-        this.navCtrl.push(this.destinationPage, { routeName: route });
+        this.navCtrl.push(this.destinationPage, route);
     };
     SourceRoutePage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad SourceRoutePage');
@@ -135,9 +132,10 @@ var SourceRoutePage = (function () {
             selector: 'page-source-route',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\source-route\source-route.html"*/'<ion-header>\n  <ion-navbar>\n    <ion-title>\n      Starting From ...\n    </ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding>\n  <ion-list>\n    <ion-item *ngFor="let route of routes" (click)="loadDestination(route)">\n      {{route.route}}\n    </ion-item>\n\n  </ion-list>\n\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\source-route\source-route.html"*/,
             providers: [__WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */]]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */]) === "function" && _b || Object])
     ], SourceRoutePage);
     return SourceRoutePage;
+    var _a, _b;
 }());
 
 //# sourceMappingURL=source-route.js.map
@@ -347,13 +345,19 @@ var RouteServiceProvider = (function () {
     RouteServiceProvider.prototype.getRoutes = function () {
         return this.http.get('http://localhost:3000/routes')
             .map(function (res) { return res.json(); });
-        //   .map(res => res.results);
+    };
+    RouteServiceProvider.prototype.getFilteredRoutes = function (startRoute) {
+        console.log('getFilteredRoutes: ', 'http://localhost:3000/routes/\"' + startRoute + '\"');
+        //use source route name to filter destination routes
+        return this.http.get('http://localhost:3000/routes/\"' + encodeURIComponent(startRoute) + '\"')
+            .map(function (res) { return res.json(); });
     };
     RouteServiceProvider = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
     ], RouteServiceProvider);
     return RouteServiceProvider;
+    var _a;
 }());
 
 //# sourceMappingURL=route-service.js.map
@@ -367,6 +371,7 @@ var RouteServiceProvider = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DestRoutePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_route_service_route_service__ = __webpack_require__(157);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -378,6 +383,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
 /**
  * Generated class for the DestRoutePage page.
  *
@@ -385,20 +391,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var DestRoutePage = (function () {
-    function DestRoutePage(navCtrl, navParams) {
+    function DestRoutePage(navCtrl, navParams, routeServiceProvider) {
+        var _this = this;
         this.navCtrl = navCtrl;
         this.navParams = navParams;
+        this.routeServiceProvider = routeServiceProvider;
+        this.filteredRoutes = new Array();
+        this.selectedStartRoute = navParams.data.route;
+        routeServiceProvider.getFilteredRoutes(this.selectedStartRoute).subscribe(function (routes) {
+            console.log('filtered routes', routes);
+            _this.filteredRoutes = routes;
+        });
     }
     DestRoutePage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad DestRoutePage');
     };
     DestRoutePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-dest-route',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/'<!--\n  Generated template for the DestRoutePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Going To ...</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  List of destination stops for route {{sourceRoute}}\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/,
+            selector: 'page-dest-route',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/'<!--\n  Generated template for the DestRoutePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Going To ...</ion-title>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <ion-list>\n    <ion-item *ngFor="let route of filteredRoutes">\n      {{route.route}}\n    </ion-item>\n\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/,
+            providers: [__WEBPACK_IMPORTED_MODULE_2__providers_route_service_route_service__["a" /* RouteServiceProvider */]]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__providers_route_service_route_service__["a" /* RouteServiceProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_route_service_route_service__["a" /* RouteServiceProvider */]) === "function" && _c || Object])
     ], DestRoutePage);
     return DestRoutePage;
+    var _a, _b, _c;
 }());
 
 //# sourceMappingURL=dest-route.js.map
@@ -434,14 +450,16 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_home_home__ = __webpack_require__(280);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_login_login__ = __webpack_require__(100);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_source_route_source_route__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__providers_auth_service_auth_service__ = __webpack_require__(155);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__providers_route_service_route_service__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_dest_route_dest_route__ = __webpack_require__(201);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__providers_auth_service_auth_service__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__providers_route_service_route_service__ = __webpack_require__(157);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -463,7 +481,8 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */],
                 __WEBPACK_IMPORTED_MODULE_7__pages_home_home__["a" /* HomePage */],
                 __WEBPACK_IMPORTED_MODULE_8__pages_login_login__["a" /* LoginPage */],
-                __WEBPACK_IMPORTED_MODULE_9__pages_source_route_source_route__["a" /* SourceRoutePage */]
+                __WEBPACK_IMPORTED_MODULE_9__pages_source_route_source_route__["a" /* SourceRoutePage */],
+                __WEBPACK_IMPORTED_MODULE_10__pages_dest_route_dest_route__["a" /* DestRoutePage */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -482,14 +501,15 @@ var AppModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_6__app_component__["a" /* MyApp */],
                 __WEBPACK_IMPORTED_MODULE_7__pages_home_home__["a" /* HomePage */],
                 __WEBPACK_IMPORTED_MODULE_8__pages_login_login__["a" /* LoginPage */],
-                __WEBPACK_IMPORTED_MODULE_9__pages_source_route_source_route__["a" /* SourceRoutePage */]
+                __WEBPACK_IMPORTED_MODULE_9__pages_source_route_source_route__["a" /* SourceRoutePage */],
+                __WEBPACK_IMPORTED_MODULE_10__pages_dest_route_dest_route__["a" /* DestRoutePage */]
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__["a" /* StatusBar */],
                 __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */],
                 { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicErrorHandler */] },
-                __WEBPACK_IMPORTED_MODULE_10__providers_auth_service_auth_service__["a" /* AuthServiceProvider */],
-                __WEBPACK_IMPORTED_MODULE_11__providers_route_service_route_service__["a" /* RouteServiceProvider */]
+                __WEBPACK_IMPORTED_MODULE_11__providers_auth_service_auth_service__["a" /* AuthServiceProvider */],
+                __WEBPACK_IMPORTED_MODULE_12__providers_route_service_route_service__["a" /* RouteServiceProvider */]
             ]
         })
     ], AppModule);
