@@ -11,6 +11,7 @@ import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { SourceRoutePage } from '../pages/source-route/source-route';
 import { DestRoutePage } from '../pages/dest-route/dest-route';
+import { TicketPage } from '../pages/ticket/ticket';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { RouteServiceProvider } from '../providers/route-service/route-service';
 
@@ -20,7 +21,8 @@ import { RouteServiceProvider } from '../providers/route-service/route-service';
     HomePage,
     LoginPage,
     SourceRoutePage,
-    DestRoutePage
+    DestRoutePage,
+    TicketPage
   ],
   imports: [
     BrowserModule,
@@ -33,7 +35,8 @@ import { RouteServiceProvider } from '../providers/route-service/route-service';
     HomePage,
     LoginPage,
     SourceRoutePage,
-    DestRoutePage
+    DestRoutePage,
+    TicketPage
   ],
   providers: [
     StatusBar,

@@ -27,10 +27,11 @@ export class LoginPage {
  
   public login() {
     
-    this.auth.login(this.loginCredentials).subscribe(allowed => {
+    this.auth.login(this.loginCredentials).subscribe((allowed) => {
       if (allowed) {  
+
         //login success, pick mbta routes
-        this.navCtrl.setRoot(SourceRoutePage);
+        this.navCtrl.setRoot(SourceRoutePage,{username:this.loginCredentials.email});
       } else {
         this.showError("Have you created an account?");
       }
@@ -41,6 +42,11 @@ export class LoginPage {
     //   });
   }
  
+  //todo: move this to the auth service
+  public getUserInfo()  {
+    return this.loginCredentials.email;
+  }
+
   showError(text) {
  
     let alert = this.alertCtrl.create({

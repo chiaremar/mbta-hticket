@@ -104,4 +104,14 @@ app.get('/routes/:routename',(req,res) => {
     });
 });
 
+//get all stops (unique)
+app.get('/ticketroutes/:username',(req,res) => {
+  let sql = `SELECT * from tickets where username =${req.params.username}`;
+  let query = db.query(sql, (err, results) => {
+    if (err) throw err;
+      console.log('ticketted routes fetched');
+      res.send(results);
+    });
+});
+
 app.listen(3000);

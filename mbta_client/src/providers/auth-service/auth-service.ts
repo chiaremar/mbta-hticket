@@ -11,30 +11,42 @@ import 'rxjs/add/operator/map';
   See https://angular.io/guide/dependency-injection for more info on providers
   and Angular DI.
 */
-export class User {
-  name: string;
-  email: string;
+// export class User {
+//   name: string;
+  
  
-  constructor(name: string, email: string) {
-    this.name = name;
-    this.email = email;
-  }
-}
+//   constructor(name: string) {
+//     this.name = name;
+    
+//   }
+// }
 
 @Injectable()
 export class AuthServiceProvider {
 
-  currentUser: User;
+  public currentUser ;
 
   constructor(public http: Http) {
      console.log('Hello AuthServiceProvider Provider');
   }
 
+  //this didn't work because the AuthServiceProvider is reinstantiated 
+  //causing currentUser to get obliterated
+  public getUserInfo()  {
+    return this.currentUser;
+  }
+
   public login(credentials) {
+       //be optimistic that this will be our new user
+       //this.currentUser = new User(credentials.email);
+       this.currentUser = credentials.email;
+    
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
+      
       return Observable.create(observer => {
+     
         // At this point make a request to your backend to make a real check!
         let body = JSON.stringify(credentials);
         let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
@@ -46,6 +58,7 @@ export class AuthServiceProvider {
                            .map(res => res.json()) // ...and calling .json() on the response to return data
                           // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
                            .subscribe (data =>{
+                               
                                 observer.next(data.allowed);
                                 observer.complete();      
                            });            
@@ -54,10 +67,14 @@ export class AuthServiceProvider {
   }
 
   public register(credentials) {
+     //be optimistic that this will be our new user
+     this.currentUser = credentials.email;
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
+     
       return Observable.create(observer => {
+
         let body = JSON.stringify(credentials);
         let headers      = new Headers({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
 
@@ -68,26 +85,16 @@ export class AuthServiceProvider {
                            .map(res => res.json()) // ...and calling .json() on the response to return data
                           // .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if any
                            .subscribe (data =>{
+                                
                                 observer.next(data.success);
                                 observer.complete();      
-                           });            
+                           });           
+                           
+                           
       });
     }
   }
-  // public register(credentials) {
-  //   if (credentials.email === null || credentials.password === null) {
-  //     return Observable.throw("Please insert credentials");
-  //   } else {
-  //     // At this point store the credentials to your backend!
-  //     return Observable.create(observer => {
-  //       observer.next(true);
-  //       observer.complete();
-  //     });
-  //   }
-  // }
 
-  public getUserInfo() : User {
-    return this.currentUser;
-  }
+ 
  
 }

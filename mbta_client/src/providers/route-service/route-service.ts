@@ -28,4 +28,12 @@ export class RouteServiceProvider {
     .map(res => res.json() );
  
   }
+
+  getTicketRoutes(username){
+    console.log('getTicketRoutes: ', 'http://localhost:3000/ticketroutes/\"' + username +'\"');
+    //use source route name to filter destination routes
+    return this.http.get('http://localhost:3000/ticketroutes/\"' + encodeURIComponent(username) +'\"')
+    .map(res => res.json() );
+ 
+  }
 }

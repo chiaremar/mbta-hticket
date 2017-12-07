@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { TicketPage } from '../ticket/ticket'; 
 import { RouteServiceProvider } from '../../providers/route-service/route-service';
 
 /**
@@ -18,16 +19,26 @@ import { RouteServiceProvider } from '../../providers/route-service/route-servic
 export class DestRoutePage {
   public selectedStartRoute;
   public filteredRoutes = new Array();
+  private ticketPage;
+  private currentUser;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public routeServiceProvider: RouteServiceProvider) {
   
-    this.selectedStartRoute = navParams.data.route;
+    //this.selectedStartRoute = navParams.data.route;
+    this.selectedStartRoute = navParams.get('route');
+    this.currentUser = navParams.get('username');
+    this.ticketPage = TicketPage;
     
-    routeServiceProvider.getFilteredRoutes(this.selectedStartRoute).subscribe(routes => {
+    routeServiceProvider.getFilteredRoutes(this.selectedStartRoute.route).subscribe(routes => {
       console.log('filtered routes', routes);
       this.filteredRoutes = routes;
     })
 
+  }
+
+  loadTicketHistory() {
+    console.log('current user for history on destination page :', this.currentUser);
+    this.navCtrl.push(this.ticketPage,  {'username' :this.currentUser});
   }
 
   ionViewDidLoad() {
