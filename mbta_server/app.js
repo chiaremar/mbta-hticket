@@ -114,4 +114,28 @@ app.get('/ticketroutes/:username',(req,res) => {
     });
 });
 
+//insert tickets
+app.post('/ticketroute', jsonParser, (req, res) => {
+  let post = req.body;
+  console.log('in register post: ', post);
+  var usern=req.body.username;
+  var startr=req.body.startroute;
+  var endr=req.body.endroute;
+
+  let sql = `INSERT INTO tickets (username, startroute, endroute) Values ('${usern}', '${startr}', '${endr}');`;
+  console.log('ticket query: ', sql);
+  let query = db.query(sql, post, (err, result) => {
+    if (err) {
+   
+      console.log(`Could not insert ticket`);
+      console.error(err);
+
+      return res.status(200).send({success: false});
+    }
+    console.log('Ticket inserted...');
+    
+    return res.status(200).send({success: true});
+  })
+});
+
 app.listen(3000);

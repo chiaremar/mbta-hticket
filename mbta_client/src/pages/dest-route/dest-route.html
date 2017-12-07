@@ -20,7 +20,7 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let route of filteredRoutes">
+    <ion-item *ngFor="let route of filteredRoutes" (click)="saveTicketRoute({'destroute': route})">
       {{route.route}}
     </ion-item>
 

@@ -21,6 +21,7 @@ export class DestRoutePage {
   public filteredRoutes = new Array();
   private ticketPage;
   private currentUser;
+  
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public routeServiceProvider: RouteServiceProvider) {
   
@@ -34,6 +35,19 @@ export class DestRoutePage {
       this.filteredRoutes = routes;
     })
 
+  }
+
+  saveTicketRoute(data) {
+    //todo add a confirmation dialog before saving the ticket
+    console.log('save ticket to history for current user :', this.currentUser);
+    
+    let body = {username:  this.currentUser ,startroute:this.selectedStartRoute.route, 
+                  endroute:data.destroute.route };
+              
+    console.log('body to ticket post', body );
+    this.routeServiceProvider.postTicketRoute(body).subscribe(success => {
+      console.log('posted ticket', success);   
+    })  
   }
 
   loadTicketHistory() {

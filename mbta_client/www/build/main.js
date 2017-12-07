@@ -115,6 +115,16 @@ var DestRoutePage = (function () {
             _this.filteredRoutes = routes;
         });
     }
+    DestRoutePage.prototype.saveTicketRoute = function (data) {
+        //todo add a confirmation dialog before saving the ticket
+        console.log('save ticket to history for current user :', this.currentUser);
+        var body = { username: this.currentUser, startroute: this.selectedStartRoute.route,
+            endroute: data.destroute.route };
+        console.log('body to ticket post', body);
+        this.routeServiceProvider.postTicketRoute(body).subscribe(function (success) {
+            console.log('posted ticket', success);
+        });
+    };
     DestRoutePage.prototype.loadTicketHistory = function () {
         console.log('current user for history on destination page :', this.currentUser);
         this.navCtrl.push(this.ticketPage, { 'username': this.currentUser });
@@ -124,7 +134,7 @@ var DestRoutePage = (function () {
     };
     DestRoutePage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-dest-route',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/'<!--\n  Generated template for the DestRoutePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Going To ...</ion-title>\n    <ion-buttons end>\n        <button (click)="loadTicketHistory()">\n          History\n        </button>\n      </ion-buttons>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <ion-list>\n    <ion-item *ngFor="let route of filteredRoutes">\n      {{route.route}}\n    </ion-item>\n\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/,
+            selector: 'page-dest-route',template:/*ion-inline-start:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/'<!--\n  Generated template for the DestRoutePage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-title>Going To ...</ion-title>\n    <ion-buttons end>\n        <button (click)="loadTicketHistory()">\n          History\n        </button>\n      </ion-buttons>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <ion-list>\n    <ion-item *ngFor="let route of filteredRoutes" (click)="saveTicketRoute({\'destroute\': route})">\n      {{route.route}}\n    </ion-item>\n\n  </ion-list>\n</ion-content>\n'/*ion-inline-end:"C:\Users\8470p\mbta-hticket\mbta_client\src\pages\dest-route\dest-route.html"*/,
             providers: [__WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */]]
         }),
         __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_route_service_route_service__["a" /* RouteServiceProvider */]) === "function" && _c || Object])
@@ -556,27 +566,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
   See https://angular.io/guide/dependency-injection for more info on providers
   and Angular DI.
 */
-// export class User {
-//   name: string;
-//   constructor(name: string) {
-//     this.name = name;
-//   }
-// }
 var AuthServiceProvider = (function () {
     function AuthServiceProvider(http) {
         this.http = http;
         console.log('Hello AuthServiceProvider Provider');
     }
-    //this didn't work because the AuthServiceProvider is reinstantiated 
-    //causing currentUser to get obliterated
-    AuthServiceProvider.prototype.getUserInfo = function () {
-        return this.currentUser;
-    };
     AuthServiceProvider.prototype.login = function (credentials) {
         var _this = this;
-        //be optimistic that this will be our new user
-        //this.currentUser = new User(credentials.email);
-        this.currentUser = credentials.email;
         if (credentials.email === null || credentials.password === null) {
             return __WEBPACK_IMPORTED_MODULE_2_rxjs_Observable__["Observable"].throw("Please insert credentials");
         }
@@ -598,8 +594,6 @@ var AuthServiceProvider = (function () {
     };
     AuthServiceProvider.prototype.register = function (credentials) {
         var _this = this;
-        //be optimistic that this will be our new user
-        this.currentUser = credentials.email;
         if (credentials.email === null || credentials.password === null) {
             return __WEBPACK_IMPORTED_MODULE_2_rxjs_Observable__["Observable"].throw("Please insert credentials");
         }
@@ -620,9 +614,10 @@ var AuthServiceProvider = (function () {
     };
     AuthServiceProvider = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* Http */]) === "function" && _a || Object])
     ], AuthServiceProvider);
     return AuthServiceProvider;
+    var _a;
 }());
 
 //# sourceMappingURL=auth-service.js.map
@@ -675,6 +670,16 @@ var RouteServiceProvider = (function () {
         console.log('getTicketRoutes: ', 'http://localhost:3000/ticketroutes/\"' + username + '\"');
         //use source route name to filter destination routes
         return this.http.get('http://localhost:3000/ticketroutes/\"' + encodeURIComponent(username) + '\"')
+            .map(function (res) { return res.json(); });
+    };
+    RouteServiceProvider.prototype.postTicketRoute = function (ticketinfo) {
+        //console.log('Post Ticket Route: ',   ticketinfo );
+        var body = JSON.stringify(ticketinfo);
+        console.log('Post Ticket Route: ', body);
+        console.log('json body to ticket post', JSON.stringify(ticketinfo));
+        var headers = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["a" /* Headers */]({ 'Content-Type': 'application/json' }); // ... Set content type to JSON
+        var options = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["d" /* RequestOptions */]({ headers: headers }); // Create 
+        return this.http.post('http://localhost:3000/ticketroute/', body, options)
             .map(function (res) { return res.json(); });
     };
     RouteServiceProvider = __decorate([
